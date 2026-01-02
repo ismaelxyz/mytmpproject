@@ -7,6 +7,7 @@ pub use iced::window::{Id, Position, Settings, close, gain_focus, open};
 use iced::{Alignment, Element, Length, Theme};
 
 mod convert_chart;
+mod float_pretty_print;
 mod parser;
 mod test;
 
