@@ -88,7 +88,7 @@ impl Display for PrettyPrintFloat {
         }
 
         if width_max == 0 {
-            return Ok(())
+            return Ok(());
         }
 
         if width_min > width_max {
@@ -105,16 +105,16 @@ impl Display for PrettyPrintFloat {
         if c == Special {
             let q = format!("{}", x);
             return if q.len() <= width_max {
-                write!(fmt, "{:w$}", q, w=width_min)
+                write!(fmt, "{:w$}", q, w = width_min)
             } else {
-                write!(fmt, "{:.p$}", "########", p=width_max)
-            }
+                write!(fmt, "{:.p$}", "########", p = width_max)
+            };
         }
         if c == Zero {
             return if width_max < 3 || width_min < 3 {
-                write!(fmt, "{:w$}", "0", w=width_min)
+                write!(fmt, "{:w$}", "0", w = width_min)
             } else {
-                write!(fmt, "{:.p$}", 0.0, p=(width_min-2))
+                write!(fmt, "{:.p$}", 0.0, p = (width_min - 2))
             };
         }
 
@@ -137,7 +137,7 @@ impl Display for PrettyPrintFloat {
                         dbg!("Too large, switching to Big");
                     }
                     c = Big;
-                },
+                }
                 l if l + 1 >= width_max => {
                     if cfg!(debug_assertions) {
                         dbg!("Almost too large, checking zeroness");
@@ -147,14 +147,14 @@ impl Display for PrettyPrintFloat {
                             dbg!("Seems to be OK to print as integer");
                         }
                         // print as integer
-                        return write!(fmt, "{:w$.0}", x, w=width_min);
+                        return write!(fmt, "{:w$.0}", x, w = width_min);
                     } else {
                         if cfg!(debug_assertions) {
                             dbg!("Refusing to print it");
                         }
                         c = Unprintable;
                     }
-                },
+                }
                 _ => {
                     // Enouch room to try fractional part
                     // Check if it would be all zeroes
@@ -162,11 +162,7 @@ impl Display for PrettyPrintFloat {
                         dbg!("Enough room to consider fractional part");
                     }
 
-                    let probe = format!(
-                        "{:.p$}",
-                        x,
-                        p=(width_max - 1 - length_of_integer_part),
-                    );
+                    let probe = format!("{:.p$}", x, p = (width_max - 1 - length_of_integer_part),);
 
                     let mut num_zeroes = 0;
                     let mut num_digits = 0;
@@ -176,20 +172,16 @@ impl Display for PrettyPrintFloat {
                         match c {
                             '0' => {
                                 num_digits += 1;
-                                if ! significant_zeroes {
+                                if !significant_zeroes {
                                     num_zeroes += 1;
                                 }
-                            },
-                            '.' => {
-                                
                             }
-                            '-' => {
-
-                            },
+                            '.' => {}
+                            '-' => {}
                             _ => {
                                 num_digits += 1;
                                 significant_zeroes = true;
-                            },
+                            }
                         }
                     }
                     if cfg!(debug_assertions) {
@@ -205,7 +197,7 @@ impl Display for PrettyPrintFloat {
                         // Too many zeroes, too few actual digits
                         c = Small;
                     }
-                },
+                }
             }
 
             if c == Medium {
@@ -213,7 +205,7 @@ impl Display for PrettyPrintFloat {
                     dbg!("Medium mode confirmed");
                 }
                 // b fits max_width, but there may be opportunities to chip off zeroes
-                let mut b = format!("{:.p$}", x, p=(width_max-1-length_of_integer_part));
+                let mut b = format!("{:.p$}", x, p = (width_max - 1 - length_of_integer_part));
                 if cfg!(debug_assertions) {
                     dbg!(&b);
                 }
@@ -223,7 +215,11 @@ impl Display for PrettyPrintFloat {
                         dbg!("Looks like we have overestimated the integer part size");
                     }
 
-                    let b2 = format!("{:.p$}", x, p=(width_max-1-length_of_integer_part+1));
+                    let b2 = format!(
+                        "{:.p$}",
+                        x,
+                        p = (width_max - 1 - length_of_integer_part + 1)
+                    );
                     if b2.len() <= width_max {
                         b = b2;
                     }
@@ -231,12 +227,18 @@ impl Display for PrettyPrintFloat {
                 let mut end = b.len();
                 if b.contains('.') {
                     loop {
-                        if end <= width_min { break }
-                        if end < 3 { break }
-                        if !b[0..end].ends_with('0') { break }
-                        if b[0..(end-1)].ends_with('.') { 
+                        if end <= width_min {
+                            break;
+                        }
+                        if end < 3 {
+                            break;
+                        }
+                        if !b[0..end].ends_with('0') {
+                            break;
+                        }
+                        if b[0..(end - 1)].ends_with('.') {
                             // protect one zero after '.'
-                            break
+                            break;
                         }
                         if cfg!(debug_assertions) {
                             dbg!("Chipped away some zero");
@@ -268,14 +270,14 @@ impl Display for PrettyPrintFloat {
                         if cfg!(debug_assertions) {
                             dbg!("Just print zero");
                         }
-                        return write!(fmt, "{:w$}", 0.0, w=width_min);
+                        return write!(fmt, "{:w$}", 0.0, w = width_min);
                     }
                 } else if minimum == width_max {
                     if cfg!(debug_assertions) {
                         dbg!("Fits just right");
                     }
                     return write!(fmt, "{}", probe);
-                } else if minimum == width_max-1 {
+                } else if minimum == width_max - 1 {
                     if cfg!(debug_assertions) {
                         dbg!("Fits almost just right");
                     }
@@ -285,7 +287,7 @@ impl Display for PrettyPrintFloat {
                     if cfg!(debug_assertions) {
                         dbg!("There is some space to be more precise");
                     }
-                    let probe2 = format!("{:.p$e}", x, p=(width_max - minimum - 1) );
+                    let probe2 = format!("{:.p$e}", x, p = (width_max - minimum - 1));
                     if cfg!(debug_assertions) {
                         dbg!(&probe2);
                     }
@@ -294,27 +296,39 @@ impl Display for PrettyPrintFloat {
                     }
                     let mut zeroes_before_e = 0;
                     let mut zeroes_in_a_row = 0;
-                    for c in probe2.chars() { match c {
-                        '0' => zeroes_in_a_row += 1,
-                        'e' | 'E' => {
-                            zeroes_before_e = zeroes_in_a_row;
-                        },
-                        _ => zeroes_in_a_row = 0,
-                    } }
+                    for c in probe2.chars() {
+                        match c {
+                            '0' => zeroes_in_a_row += 1,
+                            'e' | 'E' => {
+                                zeroes_before_e = zeroes_in_a_row;
+                            }
+                            _ => zeroes_in_a_row = 0,
+                        }
+                    }
                     if cfg!(debug_assertions) {
                         dbg!(zeroes_before_e);
                     }
-                    let zeroes_to_chip_away = zeroes_before_e.min(width_max-width_min);
+                    let zeroes_to_chip_away = zeroes_before_e.min(width_max - width_min);
                     if cfg!(debug_assertions) {
                         dbg!(zeroes_to_chip_away);
                     }
-                    return write!(fmt, "{:.p$e}", x, p=(width_max - minimum - 1 - zeroes_to_chip_away) );
+                    return write!(
+                        fmt,
+                        "{:.p$e}",
+                        x,
+                        p = (width_max - minimum - 1 - zeroes_to_chip_away)
+                    );
                 }
-            },
+            }
             Unprintable => (),
         }
 
-        write!(fmt, "{:.p$}", "##################################", p=width_min)
+        write!(
+            fmt,
+            "{:.p$}",
+            "##################################",
+            p = width_min
+        )
     }
 }
 
