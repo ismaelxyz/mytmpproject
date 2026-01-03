@@ -1,7 +1,7 @@
 #[rustfmt::skip]
 #[cfg(test)]
 mod tests {
-    use crate::parser::parse;
+    use crate::parser::{Env, parse, parse_with_env};
 
     #[test]
     fn precedence_test() {
@@ -47,6 +47,29 @@ mod tests {
         assert_eq!(4_f64, parse("2 times 2"));
         assert_eq!(4_f64, parse("2 multiply by 2"));
         assert_eq!(4_f64, parse("2 mul 2"));
+    }
+
+    #[test]
+    fn variables() {
+        let mut env = Env::default();
+        assert_eq!(2_f64, parse_with_env("x=2", &mut env));
+        assert_eq!(5_f64, parse_with_env("x+3", &mut env));
+        assert_eq!(10_f64, parse_with_env("y=2*5", &mut env));
+        assert_eq!(15_f64, parse_with_env("x+y+3", &mut env));
+    }
+
+    #[test]
+    fn user_defined_functions() {
+        let mut env = Env::default();
+
+        // Define function f(x) = x*2
+        let _ = parse_with_env("f(x)=x*2", &mut env);
+        assert_eq!(10_f64, parse_with_env("f(5)", &mut env));
+
+        // Function can reference globals
+        assert_eq!(3_f64, parse_with_env("a=3", &mut env));
+        let _ = parse_with_env("g(x)=x+a", &mut env);
+        assert_eq!(7_f64, parse_with_env("g(4)", &mut env));
     }
 
     #[test]

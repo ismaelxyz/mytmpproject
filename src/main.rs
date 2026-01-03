@@ -41,9 +41,10 @@ impl CalculatorEngine {
     fn process_input(input: &str) -> CalculationResult {
         let mut output = String::new();
         let mut total = 0.0;
+        let mut env = parser::Env::default();
 
         for line in input.lines() {
-            let parsed = parser::parse(line);
+            let parsed = parser::parse_with_env(line, &mut env);
             if parsed.is_normal() {
                 total += parsed;
             }

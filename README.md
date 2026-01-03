@@ -21,6 +21,19 @@
 ```
 2 + 2
 
+// Variables (persist across lines)
+x = 10
+x * 3
+
+// User-defined functions (1 argument)
+f(x) = x^2 + 1
+f(4)
+
+// Functions can use variables
+a = 3
+g(x) = x + a
+g(7)
+
 sin( 90 ) + cos ( 120 )
 sqrt(144) + 12
 ceil ( 12.12 ) + 22
@@ -92,6 +105,37 @@ cos ( 90 )
 ceil ( 2.2 )
 floor(3.3)
 ```
+
+### Variables & User Functions
+
+You can define variables and simple (unary) functions. Definitions persist across lines in the input editor.
+
+**Variables**
+
+```
+x = 2
+x + 3
+y = x * 10
+y
+```
+
+**User-defined functions (1 argument)**
+
+```
+f(x) = x * 2
+f(5)
+
+// can reference variables
+a = 3
+g(x) = x + a
+g(4)
+```
+
+Notes:
+
+- Function definitions currently support exactly 1 parameter.
+- A user-defined function name overrides a built-in function with the same name.
+- Definition lines don’t produce a numeric result (they show `-` in the results panel).
 
 ## Supported Conversions
 

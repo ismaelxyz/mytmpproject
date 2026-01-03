@@ -21,11 +21,12 @@ percentOf   = { "percent of" | "%" ~ "of" }
 percentOn   = { "percent on" | "%" ~ "on" }
 
 function = { ident ~ "(" ~ expr ~ ")" }
+fun_def = { ident ~ "(" ~ ident ~ ")" ~ "=" ~ expr }
 atom = _{ constants | function | ident | convert | num | "(" ~ expr ~ ")"  }
 expr = { atom ~ (operation ~ atom)* }
 assign = { ident ~ "=" ~ expr }
 
-stmt = _{ assign | expr }
+stmt = _{ fun_def | assign | expr }
 
 calculation = _{ SOI ~ stmt ~ EOI }
 
