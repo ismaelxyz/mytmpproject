@@ -39,7 +39,12 @@ struct FunctionDef {
     body: String,
 }
 
-fn eval_expr_str(expr: &str, env: &Env, locals: Option<&HashMap<String, f64>>, depth: usize) -> f64 {
+fn eval_expr_str(
+    expr: &str,
+    env: &Env,
+    locals: Option<&HashMap<String, f64>>,
+    depth: usize,
+) -> f64 {
     let parse_result = Calculator::parse(Rule::expr, expr);
     match parse_result {
         Ok(mut pairs) => {
@@ -52,7 +57,12 @@ fn eval_expr_str(expr: &str, env: &Env, locals: Option<&HashMap<String, f64>>, d
     }
 }
 
-fn eval(expression: Pairs<Rule>, env: &Env, locals: Option<&HashMap<String, f64>>, depth: usize) -> f64 {
+fn eval(
+    expression: Pairs<Rule>,
+    env: &Env,
+    locals: Option<&HashMap<String, f64>>,
+    depth: usize,
+) -> f64 {
     // Basic recursion guard for user-defined functions.
     if depth > 64 {
         return f64::NAN;
